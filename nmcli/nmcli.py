@@ -77,6 +77,26 @@ class NMCLI(object):
 
         return rc, stdout, stderr
 
+    def add_connection(self, connection_type, properties=None):
+        self.args = 'connection add type {type}'.format(type=connection_type)
+
+        if type(properties) is not dict:
+            raise TypeError("'properties' must be dictionary.")
+        else:
+            for p, v in properties.items():
+                self.args += ' {p} {v}'.format(p=p, v=v)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
+    def delete_connection(self, id):
+        self.args = 'connection delete {id}'.format(id=id)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
 class NMCLI_EXIT_STATUS(Enum):
     SUCCESS = 0
     UNKNOWN = 1
