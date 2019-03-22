@@ -2,5 +2,8 @@
 /include
 /lib
 /lib64
+/build
+/dist
 pyvenv.cfg
 python_nmcli_wrapper/__pycache__/
+python_nmcli_wrapper.egg-info/
