@@ -1,4 +1,3 @@
-============================================
 Python wrapper for NetworkManager-CLI(nmcli)
 ============================================
 
@@ -15,7 +14,6 @@ How to Install
 ==============
 
 ```console
-
     pip install python-nmcli-wrapper
 ```
 
@@ -23,7 +21,6 @@ Example
 =======
 
 ```python
-
     from python_nmcli_wrapper import NMCLI, NMCLI_EXIT_STATUS
 
 
