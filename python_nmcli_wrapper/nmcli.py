@@ -97,6 +97,69 @@ class NMCLI(object):
 
         return rc, stdout, stderr
 
+    def clone_connection(self, id, new_name):
+        self.args = 'connection clone {id} {new_name}'.format(id=id, new_name=new_name)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
+    def reload_connection(self):
+        self.args = 'connection reload'
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
+    def load_connection(self, filename):
+        self.args = 'connection load {filename}'.format(filename=filename)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
+    def up_connection(self, id):
+        self.args = 'connection up {id}'.format(id=id)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
+    def down_connection(self, id):
+        self.args = 'connection down {id}'.format(id=id)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
+    def reapply_device(self, ifname):
+        self.args = 'device reapply {ifname}'.format(ifname=ifname)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
+    def connect_device(self, ifname, wait=90):
+        self.args = '--wait={wait} device connect {ifname}'.format(wait=wait, ifname=ifname)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
+    def disconnect_device(self, ifname, wait=10):
+        self.args = '--wait={wait} device disconnect {ifname}'.format(wait=wait, ifname=ifname)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
+    def delete_device(self, ifname, wait=10):
+        self.args = '--wait={wait} device delete {ifname}'.format(wait=wait, ifname=ifname)
+
+        rc, stdout, stderr = _run_nmcli(self)
+
+        return rc, stdout, stderr
+
 class NMCLI_EXIT_STATUS(Enum):
     SUCCESS = 0
     UNKNOWN = 1

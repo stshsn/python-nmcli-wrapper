@@ -1,6 +1,9 @@
-from nmcli import NMCLI, NMCLI_EXIT_STATUS
+from python_nmcli_wrapper import NMCLI, NMCLI_EXIT_STATUS
 
 nm = NMCLI()
+returncode, stdout, stderr = nm.show_version()
+print(stdout)
+
 returncode, stdout, stderr = nm.list_devices()
 print(stdout)
 
@@ -20,6 +23,16 @@ returncode, stdout, stderr = nm.add_connection('bridge', properties={'ifname':'b
 print(NMCLI_EXIT_STATUS(returncode), stdout.decode('utf8'), stderr.decode('utf8'))
 
 returncode, stdout, stderr = nm.delete_connection('bridge-br0')
+print(NMCLI_EXIT_STATUS(returncode), stdout.decode('utf8'), stderr.decode('utf8'))
+
+returncode, stdout, stderr = nm.clone_connection('wired1', 'new-connection')
+print(NMCLI_EXIT_STATUS(returncode), stdout.decode('utf8'), stderr.decode('utf8'))
+returncode, stdout, stderr = nm.delete_connection('new-connection')
+
+returncode, stdout, stderr = nm.reload_connection()
+print(NMCLI_EXIT_STATUS(returncode), stdout.decode('utf8'), stderr.decode('utf8'))
+
+returncode, stdout, stderr = nm.load_connection('./ifcfg-default')
 print(NMCLI_EXIT_STATUS(returncode), stdout.decode('utf8'), stderr.decode('utf8'))
 
 if __name__ == '__main__':
