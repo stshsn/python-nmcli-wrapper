@@ -14,13 +14,16 @@ Requirements
 How to Install
 ==============
 
-> pip install python-nmcli-wrapper
+```console
+
+    pip install python-nmcli-wrapper
+```
 
 Example
 =======
 
-Example code
-.. code-block:: python
+```python
+
     from python_nmcli_wrapper import NMCLI, NMCLI_EXIT_STATUS
 
 
@@ -28,3 +31,4 @@ Example code
 
     returncode, stdout, stderr = nm.show_version()
     print(stdout, end="")
+```
