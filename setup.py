@@ -14,7 +14,7 @@ setup(
     long_description=readme,
     author='Satoshi HOSHINO',
     author_email='s-hoshino@ib-sol.co.jp',
-    install_requires=['os', 'shlex', 'subprocess', 'enum'],
+    install_requires=[],
     url='',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
