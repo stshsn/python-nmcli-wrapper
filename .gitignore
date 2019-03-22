@@ -5,5 +5,5 @@
 /build
 /dist
 pyvenv.cfg
-python_nmcli_wrapper/__pycache__/
+*/__pycache__/
 python_nmcli_wrapper.egg-info/
