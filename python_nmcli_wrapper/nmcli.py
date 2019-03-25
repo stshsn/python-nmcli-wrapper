@@ -2,7 +2,7 @@ import os, shlex, subprocess
 from enum import Enum
 
 def _run_nmcli(nmcli):
-    cmd = nmcli.path + ' ' + nmcli.args
+    cmd = ' '.join([nmcli.path, nmcli.args])
     args = shlex.split(cmd)
 
     process = subprocess.run(args, capture_output=True)
@@ -71,7 +71,13 @@ class NMCLI(object):
             raise TypeError("'properties' must be dictionary.")
         else:
             for p, v in properties.items():
-                self.args += ' {p} {v}'.format(p=p, v=v)
+                if type(v) in (list, tuple):
+                    for ev in v:
+                        self.args += ' {p} {ev}'.format(p=p, ev=ev)
+                elif type(v) is str:
+                    self.args += ' {p} {v}'.format(p=p, v=v)
+                else:
+                    raise TypeError("Expected 'list', 'tuple' or 'str' for argument 'values'.")
 
         rc, stdout, stderr = _run_nmcli(self)
 
@@ -84,7 +90,13 @@ class NMCLI(object):
             raise TypeError("'properties' must be dictionary.")
         else:
             for p, v in properties.items():
-                self.args += ' {p} {v}'.format(p=p, v=v)
+                if type(v) in (list, tuple):
+                    for ev in v:
+                        self.args += ' {p} {ev}'.format(p=p, ev=ev)
+                elif type(v) is str:
+                    self.args += ' {p} {v}'.format(p=p, v=v)
+                else:
+                    raise TypeError("Expected 'list', 'tuple' or 'str' for argument 'values'.")
 
         rc, stdout, stderr = _run_nmcli(self)
 

@@ -19,6 +19,9 @@ print(NMCLI_EXIT_STATUS(returncode), stdout, stderr.decode('utf8'))
 returncode, stdout, stderr = nm.modify('device', 'ens38', properties={'ipv4.method':'auto', '-ipv4.addresses':'192.168.17.22', '-ipv4.dns':'8.8.8.8'})
 print(NMCLI_EXIT_STATUS(returncode), stdout.decode('utf8'), stderr.decode('utf8'))
 
+returncode, stdout, stderr = nm.modify('connection', 'wired1', properties={'ipv4.method':'auto', '+ipv4.dns':('8.8.8.8', '8.8.4.4', '1.1.1.1')})
+print(NMCLI_EXIT_STATUS(returncode), stdout.decode('utf8'), stderr.decode('utf8'))
+
 returncode, stdout, stderr = nm.add_connection('bridge', properties={'ifname':'br0', 'con-name':'bridge-br0', 'ipv4.method':'manual', 'ipv4.addresses':'172.18.0.1/16', 'bridge.stp':'no'})
 print(NMCLI_EXIT_STATUS(returncode), stdout.decode('utf8'), stderr.decode('utf8'))
 
