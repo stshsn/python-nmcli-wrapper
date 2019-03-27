@@ -1,4 +1,4 @@
-import os, shlex, subprocess
+import os, shlex, subprocess, re
 from enum import Enum
 
 def _run_nmcli(nmcli):
@@ -12,6 +12,17 @@ def _run_nmcli(nmcli):
     stderr = process.stderr
 
     return returncode, stdout, stderr
+
+def __multiple_values_to_list__(params):
+    if type(params) is not dict:
+        raise TypeError("Except 'dict' for argument 'params'.")
+
+    for k in list(params):
+        match = re.search(b'(?P<key_name>.+)\[[0-9]+\]$', k)
+        if match:
+            params.setdefault(match.group('key_name'), []).append(params[k])
+
+    return params
 
 class NMCLI(object):
     def __init__(self, path='/usr/bin/nmcli'):
@@ -51,6 +62,13 @@ class NMCLI(object):
         return rc, connections, stderr.decode('utf8')
 
     def show(self, target, id, field='common'):
+        if type(field) is str:
+            field = field.replace(" ", "")
+        elif type(field) in (list, tuple):
+            field = ','.join(field)
+        else:
+            raise TypeError("Expected 'list', 'tuple' or 'str' for argument 'field'.")
+
         self.args = '-t -f {field} {target} show {id}'.format(field=field, target=target, id=id)
         rc, stdout, stderr = _run_nmcli(self)
 
@@ -59,6 +77,8 @@ class NMCLI(object):
             for f in stdout.splitlines():
                 key, value = f.split(b':', 1)
                 params[key] = value
+            if target == 'device':
+                params = __multiple_values_to_list__(params)
         else:
             params = None
 

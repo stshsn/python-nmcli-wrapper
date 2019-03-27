@@ -29,7 +29,7 @@ class NmcliTests(TestCase):
         self.assertEqual(rc, 0)
         self.assertEqual(type(stdout), tuple)
 
-    def test_05_show_device(self):
+    def test_05_show_device_0(self):
         nm = NMCLI()
         _, dev, _ = nm.list_devices()
         d = dev[0].decode('utf8')
@@ -39,12 +39,32 @@ class NmcliTests(TestCase):
         self.assertEqual(type(stdout), dict)
         self.assertEqual(stdout[b'GENERAL.DEVICE'].decode('utf8'), d)
 
-    def test_06_show_connection(self):
+    def test_05_show_device_1(self):
+        nm = NMCLI()
+        _, dev, _ = nm.list_devices()
+        d = dev[0].decode('utf8')
+
+        rc, stdout, stderr = nm.show('device', d, field=('GENERAL.DEVICE', 'GENERAL.TYPE'))
+        self.assertEqual(rc, 0)
+        self.assertEqual(type(stdout), dict)
+        self.assertEqual(stdout[b'GENERAL.DEVICE'].decode('utf8'), d)
+
+    def test_06_show_connection_0(self):
         nm = NMCLI()
         _, con, _ = nm.list_connections()
         c = con[0].decode('utf8')
 
         rc, stdout, stderr = nm.show('connection', c, field='all')
+        self.assertEqual(rc, 0)
+        self.assertEqual(type(stdout), dict)
+        self.assertEqual(stdout[b'connection.id'].decode('utf8'), c)
+
+    def test_06_show_connection_1(self):
+        nm = NMCLI()
+        _, con, _ = nm.list_connections()
+        c = con[0].decode('utf8')
+
+        rc, stdout, stderr = nm.show('connection', c, field=['connection.id', 'connection.type'])
         self.assertEqual(rc, 0)
         self.assertEqual(type(stdout), dict)
         self.assertEqual(stdout[b'connection.id'].decode('utf8'), c)
