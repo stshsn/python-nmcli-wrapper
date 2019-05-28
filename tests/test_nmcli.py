@@ -7,6 +7,11 @@ class NmcliTests(TestCase):
         nm = NMCLI()
         self.assertEqual(nm.path, '/usr/bin/nmcli')
 
+    def test_00_constructor_1(self):
+        _env = {'LANG':'C'}
+        nm = NMCLI(env=_env)
+        self.assertEqual(nm.env, _env)
+
     def test_01_instance_raise_exception(self):
         with self.assertRaises(NameError):
             nm = NMCLI(path='/usr/local/not_nmcli')

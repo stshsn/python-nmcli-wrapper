@@ -5,7 +5,7 @@ def _run_nmcli(nmcli):
     cmd = ' '.join([nmcli.path, nmcli.args])
     args = shlex.split(cmd)
 
-    process = subprocess.run(args, capture_output=True)
+    process = subprocess.run(args, env=nmcli.env, capture_output=True)
 
     returncode = process.returncode
     stdout = process.stdout
@@ -25,7 +25,7 @@ def __multiple_values_to_list__(params):
     return params
 
 class NMCLI(object):
-    def __init__(self, path='/usr/bin/nmcli'):
+    def __init__(self, path='/usr/bin/nmcli', env=None):
         if os.path.basename(path) != 'nmcli':
             raise NameError("'{path}' is not a path to nmcli.".format(path=path))
         if os.access(path, os.X_OK):
@@ -33,6 +33,12 @@ class NMCLI(object):
             self.args = ''
         else:
             raise FileNotFoundError("'{path}' is not executable.".format(path=path))
+        if env is None:
+            self.env = None
+        elif type(env) is dict:
+            self.env = env
+        else:
+            raise TypeError("Except 'dict' for argument 'env'.")
 
     def show_version(self):
         self.args = '-v'
