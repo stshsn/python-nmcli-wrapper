@@ -5,7 +5,7 @@ def _run_nmcli(nmcli):
     cmd = ' '.join([nmcli.path, nmcli.args])
     args = shlex.split(cmd)
 
-    process = subprocess.run(args, env=nmcli.env, capture_output=True)
+    process = subprocess.run(args, capture_output=True, text=nmcli.text, env=nmcli.env)
 
     returncode = process.returncode
     stdout = process.stdout
@@ -25,7 +25,7 @@ def __multiple_values_to_list__(params):
     return params
 
 class NMCLI(object):
-    def __init__(self, path='/usr/bin/nmcli', env=None):
+    def __init__(self, *, path='/usr/bin/nmcli', text=None, env=None):
         if os.path.basename(path) != 'nmcli':
             raise NameError("'{path}' is not a path to nmcli.".format(path=path))
         if os.access(path, os.X_OK):
@@ -33,6 +33,10 @@ class NMCLI(object):
             self.args = ''
         else:
             raise FileNotFoundError("'{path}' is not executable.".format(path=path))
+        if text is None or type(text) is bool:
+            self.text = text
+        else:
+            raise TypeError("Except 'None or bool' for argument 'text'.")
         if env is None:
             self.env = None
         elif type(env) is dict:
@@ -43,7 +47,7 @@ class NMCLI(object):
     def show_version(self):
         self.args = '-v'
         rc, stdout, stderr = _run_nmcli(self)
-        return rc, stdout.decode('utf8'), stderr.decode('utf8')
+        return rc, stdout, stderr
 
     def list_devices(self):
         self.args = '-g DEVICE device'
@@ -54,7 +58,7 @@ class NMCLI(object):
         else:
             devices = None
         
-        return rc, devices, stderr.decode('utf8')
+        return rc, devices, stderr
 
     def list_connections(self):
         self.args = '-g NAME connection'
@@ -65,7 +69,7 @@ class NMCLI(object):
         else:
             connections = None
 
-        return rc, connections, stderr.decode('utf8')
+        return rc, connections, stderr
 
     def show(self, target, id, field='common'):
         if type(field) is str:

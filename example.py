@@ -11,8 +11,25 @@ If your nmcli is in different path, you can specify the path using
 
 Throw NameError exception if path ending without 'nmcli'.
 Throw FileNotFoundError if the file specified is not executable.
+
+
+The return values except returncode described below are type of bytes.
+If you want return values in type of str, you may specify 'text'
+argument.
+    nm = NMCLI(text=True)
+
+Throw TypeError exception if you specify other than 'None', 'True' or
+'False' for text argument.
+
+
+If you want to pass environment variables when executing nmcli,
+you can specify 'env' argument.
+    nm = NMCLI(env={'LANG': 'C'})
+
+Throw TypeError exception if you specify other than 'None' or
+a dictionary.
 """
-nm = NMCLI()
+nm = NMCLI(text=True, env={'LANG':'C'})
 
 """
 All methods return a tuple containing returncode, stdout and stderr.
@@ -24,6 +41,12 @@ stderr     : standard error output from 'nmcli'
              empty str is returned when 'nmcli' finished successfully
 """
 
+# show version of 'nmcli'
+returncode, stdout, stderr = nm.show_version()
+print(stdout)
+
+
+nm = NMCLI() # return values will be in type of bytes and default LOCALE
 # show version of 'nmcli'
 returncode, stdout, stderr = nm.show_version()
 print(stdout)

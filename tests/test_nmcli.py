@@ -8,6 +8,10 @@ class NmcliTests(TestCase):
         self.assertEqual(nm.path, '/usr/bin/nmcli')
 
     def test_00_constructor_1(self):
+        nm = NMCLI(text=True)
+        self.assertEqual(nm.text, True)
+
+    def test_00_constructor_2(self):
         _env = {'LANG':'C'}
         nm = NMCLI(env=_env)
         self.assertEqual(nm.env, _env)
@@ -16,8 +20,22 @@ class NmcliTests(TestCase):
         with self.assertRaises(NameError):
             nm = NMCLI(path='/usr/local/not_nmcli')
 
+    def test_01_instance_raise_exception_1(self):
+        with self.assertRaises(TypeError):
+            nm = NMCLI(text="Not boolean")
+
+    def test_02_instance_raise_exception_2(self):
+        with self.assertRaises(TypeError):
+            nm = NMCLI(env="Not a dictionary")
+
     def test_02_show_version(self):
         nm = NMCLI()
+        rc, stdout, stderr = nm.show_version()
+        self.assertEqual(rc, 0)
+        self.assertEqual(stdout.split()[0], b'nmcli')
+
+    def test_02_show_version_1(self):
+        nm = NMCLI(text=True)
         rc, stdout, stderr = nm.show_version()
         self.assertEqual(rc, 0)
         self.assertEqual(stdout.split()[0], 'nmcli')
