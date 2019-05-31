@@ -13,12 +13,15 @@ def _run_nmcli(nmcli):
 
     return returncode, stdout, stderr
 
-def __multiple_values_to_list__(params):
+def __multiple_values_to_list__(params, text):
     if type(params) is not dict:
         raise TypeError("Except 'dict' for argument 'params'.")
 
+    key_name = b'(?P<key_name>.+)\[[0-9]+\]$'
+    if text is True:
+        key_name = key_name.decode('UTF-8')
     for k in list(params):
-        match = re.search(b'(?P<key_name>.+)\[[0-9]+\]$', k)
+        match = re.search(key_name, k)
         if match:
             params.setdefault(match.group('key_name'), []).append(params[k])
 
@@ -84,11 +87,14 @@ class NMCLI(object):
 
         if rc == 0:
             params = dict()
+            delimiter = b':'
+            if self.text is True:
+                delimiter = delimiter.decode('UTF-8')
             for f in stdout.splitlines():
-                key, value = f.split(b':', 1)
+                key, value = f.split(delimiter, 1)
                 params[key] = value
             if target == 'device':
-                params = __multiple_values_to_list__(params)
+                params = __multiple_values_to_list__(params, self.text)
         else:
             params = None
 
