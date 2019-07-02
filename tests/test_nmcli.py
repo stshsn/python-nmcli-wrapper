@@ -98,17 +98,19 @@ class NmcliTests(TestCase):
         self.assertEqual(type(stdout), dict)
         self.assertEqual(stdout[b'connection.id'].decode('utf8'), c)
 
-    def test_07_add_connection(self):
+    def test_07_add_connection_1(self):
         nm = NMCLI()
         ifname = 'dummy0'
         con_name = 'dummy-dummy0'
         ip_address = '192.0.2.1/24'
+        dns_server = '1.1.1.1'
 
         rc, _, _ = nm.add_connection(
             'dummy',
             properties={
                 'ifname':ifname, 'con-name':con_name,
                 'ipv4.method':'manual', 'ipv4.addresses':ip_address,
+                'ipv4.dns':dns_server,
             }
         )
         self.assertEqual(rc, 0)
@@ -121,14 +123,26 @@ class NmcliTests(TestCase):
         ]))
         self.assertEqual(stdout, {b'connection.interface-name':ifname.encode('utf8'), b'connection.id':con_name.encode('utf8'), b'ipv4.method':b'manual', b'ipv4.addresses':ip_address.encode('utf8')})
 
-    def test_08_modify_connection(self):
+    def test_08_modify_connection_1(self):
         nm = NMCLI()
         ipaddresses = ['198.51.100.1/24', '203.0.113.1/24']
+        dnsservers = ['8.8.8.8', '8.8.4.4']
 
-        rc, _, _ = nm.modify('connection', 'dummy-dummy0', {'+ipv4.addresses':ipaddresses})
+        rc, _, _ = nm.modify('connection', 'dummy-dummy0', {'+ipv4.addresses':ipaddresses, '+ipv4.dns':dnsservers})
         self.assertEqual(rc, 0)
         rc, stdout, stderr = nm.show('connection', 'dummy-dummy0', field='ipv4.addresses')
         self.assertEqual(stdout, {b'ipv4.addresses': b'192.0.2.1/24, 198.51.100.1/24, 203.0.113.1/24'})
+        rc, stdout, stderr = nm.show('connection', 'dummy-dummy0', field='ipv4.dns')
+        self.assertEqual(stdout, {b'ipv4.dns': b'1.1.1.1,8.8.8.8,8.8.4.4'})
+
+    def test_08_modify_connection_2(self):
+        nm = NMCLI()
+        dns_server = ""
+
+        rc, _, _ = nm.modify('connection', 'dummy-dummy0', {'ipv4.dns':dns_server})
+        self.assertEqual(rc, 0)
+        rc, stdout, stderr = nm.show('connection', 'dummy-dummy0', field='ipv4.dns')
+        self.assertEqual(stdout, {b'ipv4.dns': b''})
 
     def test_09_up_connection(self):
         nm = NMCLI()
@@ -148,7 +162,15 @@ class NmcliTests(TestCase):
         self.assertEqual(rc, 0)
         _, stdout, _ = nm.list_connections()
         self.assertNotIn(b'dummy-dummy0', stdout)
+
+    def test_11_delete_device(self):
+        nm = NMCLI()
+
         _, stdout, _ = nm.list_devices()
+        if b'dummy0' in stdout:
+            rc, _, _ = nm.delete_device('dummy0')
+            self.assertEqual(rc, 0)
+
         self.assertNotIn(b'dummy0', stdout)
 
 if __name__ == '__main__':

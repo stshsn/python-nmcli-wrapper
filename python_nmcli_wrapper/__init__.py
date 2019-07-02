@@ -1,3 +1,3 @@
 from .nmcli import NMCLI, NMCLI_EXIT_STATUS
 
-__version__ = '0.5.1'
+__version__ = '0.5.2'

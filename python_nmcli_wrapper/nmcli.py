@@ -111,7 +111,10 @@ class NMCLI(object):
                     for ev in v:
                         self.args += ' {p} {ev}'.format(p=p, ev=ev)
                 elif type(v) is str:
-                    self.args += ' {p} {v}'.format(p=p, v=v)
+                    if len(v) == 0:
+                        self.args += ' {p} ""'.format(p=p)
+                    else:
+                        self.args += ' {p} {v}'.format(p=p, v=v)
                 else:
                     raise TypeError("Expected 'list', 'tuple' or 'str' for argument 'values'.")
 
@@ -130,7 +133,10 @@ class NMCLI(object):
                     for ev in v:
                         self.args += ' {p} {ev}'.format(p=p, ev=ev)
                 elif type(v) is str:
-                    self.args += ' {p} {v}'.format(p=p, v=v)
+                    if len(v) == 0:
+                        self.args += ' {p} ""'.format(p=p)
+                    else:
+                        self.args += ' {p} {v}'.format(p=p, v=v)
                 else:
                     raise TypeError("Expected 'list', 'tuple' or 'str' for argument 'values'.")
 
