@@ -120,8 +120,16 @@ class NmcliTests(TestCase):
                 'connection.id',
                 'ipv4.method',
                 'ipv4.addresses'
-        ]))
-        self.assertEqual(stdout, {b'connection.interface-name':ifname.encode('utf8'), b'connection.id':con_name.encode('utf8'), b'ipv4.method':b'manual', b'ipv4.addresses':ip_address.encode('utf8')})
+            ])
+        )
+        self.assertEqual(stdout,
+            {
+                b'connection.interface-name':ifname.encode('utf8'),
+                b'connection.id':con_name.encode('utf8'),
+                b'ipv4.method':b'manual',
+                b'ipv4.addresses':ip_address.encode('utf8')
+            }
+        )
 
     def test_08_modify_connection_1(self):
         nm = NMCLI()

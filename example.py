@@ -28,6 +28,14 @@ you can specify 'env' argument.
 
 Throw TypeError exception if you specify other than 'None' or
 a dictionary.
+
+
+If you need super-user priviledge to execute 'nmcli' command,
+you can specify 'sudo' argument.
+    nm = NMCLI(sudo='path/to/sudo')
+
+Throw NameError exception if path-to-sudo ending without 'sudo'.
+Throw FileNotFoundError if the file specified is not executable.
 """
 nm = NMCLI(text=True, env={'LANG':'C'})
 

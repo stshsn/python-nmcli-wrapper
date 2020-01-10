@@ -28,7 +28,7 @@ def __multiple_values_to_list__(params, text):
     return params
 
 class NMCLI(object):
-    def __init__(self, *, path='/usr/bin/nmcli', text=None, env=None):
+    def __init__(self, *, path='/usr/bin/nmcli', text=None, env=None, sudo=False):
         if os.path.basename(path) != 'nmcli':
             raise NameError("'{path}' is not a path to nmcli.".format(path=path))
         if os.access(path, os.X_OK):
@@ -46,6 +46,14 @@ class NMCLI(object):
             self.env = env
         else:
             raise TypeError("Except 'dict' for argument 'env'.")
+        if sudo is not False:
+            if os.path.basename(sudo) != 'sudo':
+                raise NameError("'{sudo}' is not a path to sudo.".format(sudo=sudo))
+            if os.access(path, os.X_OK):
+                self.sudo = sudo
+            else:
+                raise FileNotFoundError("'{sudo}' is not executable.".format(sudo=sudo))
+            self.path = self.sudo + ' ' + self.path
 
     def show_version(self):
         self.args = '-v'
